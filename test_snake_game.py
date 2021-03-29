@@ -100,23 +100,36 @@ class TestGameLogic(unittest.TestCase):
         verify_game_map(fake_output.drawn_maps[0], {(1, 1): Snake, (2, 1): Food})
         verify_game_map(fake_output.drawn_maps[1], {(1, 1): Snake, (2, 1): Snake, (0, 0): Food})
 
-    def testRunHitWallAndDie(self):
+    @patch('random.randint')
+    def testRunHitWallAndDie(self, mock_random):
         mock_input_interface = Mock()
         mock_input_interface.get_next_action.return_value = Direction.X_POSITIVE
         fake_output = FakeOutput()
 
+        mock_random.side_effect = [0, 0]
+
         test_game = SnakeGame()
         test_game.run(mock_input_interface, fake_output, 3, 3)
         self.assertEqual(fake_output.game_results, [False])
+        self.assertEqual(2, len(fake_output.drawn_maps))
 
+        def verify_game_map(game_map, object_types_by_pos):
+            max_x, max_y = game_map.shape()
+            for pos_x in range(max_x):
+                for pos_y in range(max_y):
+                    expected_type = object_types_by_pos.get((pos_x, pos_y), type(None))
+                    self.assertEqual(expected_type, type(game_map.peek(pos_x, pos_y)), f'{pos_x} {pos_y}')
+
+        verify_game_map(fake_output.drawn_maps[0], {(1, 1): Snake, (0, 0): Food})
+        verify_game_map(fake_output.drawn_maps[1], {(2, 1): Snake, (0, 0): Food})
 
 """
-    @patch('builtins.print')
     @patch('random.randint')
     def testRunHitSnakeAndDie(self, mock_random, _mock_print):
-        text_output = TextOutput()
-        mock_keyboard = Mock()
-        mock_keyboard.get_next_action.side_effect = [Direction.Y_NEGATIVE,
+        mock_input_interface = Mock()
+        fake_output = FakeOutput()
+
+        mock_input_interface.get_next_action.side_effect = [Direction.Y_NEGATIVE,
                                                      Direction.X_NEGATIVE,
                                                      Direction.Y_POSITIVE,
                                                      Direction.Y_POSITIVE,
