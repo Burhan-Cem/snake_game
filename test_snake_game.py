@@ -123,20 +123,19 @@ class TestGameLogic(unittest.TestCase):
         verify_game_map(fake_output.drawn_maps[0], {(1, 1): Snake, (0, 0): Food})
         verify_game_map(fake_output.drawn_maps[1], {(2, 1): Snake, (0, 0): Food})
 
-"""
     @patch('random.randint')
-    def testRunHitSnakeAndDie(self, mock_random, _mock_print):
+    def testRunHitSnakeAndDie(self, mock_random):
         mock_input_interface = Mock()
         fake_output = FakeOutput()
 
         mock_input_interface.get_next_action.side_effect = [Direction.Y_NEGATIVE,
-                                                     Direction.X_NEGATIVE,
-                                                     Direction.Y_POSITIVE,
-                                                     Direction.Y_POSITIVE,
-                                                     Direction.X_POSITIVE,
-                                                     Direction.Y_NEGATIVE,
-                                                     Direction.X_NEGATIVE
-                                                     ]
+                                                            Direction.X_NEGATIVE,
+                                                            Direction.Y_POSITIVE,
+                                                            Direction.Y_POSITIVE,
+                                                            Direction.X_POSITIVE,
+                                                            Direction.Y_NEGATIVE,
+                                                            Direction.X_NEGATIVE
+                                                            ]
 
         mock_random.side_effect = [2, 1,
                                    2, 0,
@@ -147,39 +146,54 @@ class TestGameLogic(unittest.TestCase):
                                    0, 0]
 
         test_game = SnakeGame()
-        game_result = test_game.run(mock_keyboard, text_output, 3, 3)
-        self.assertEqual(game_result, Snake.MoveResult.HIT_SNAKE)
+        test_game.run(mock_input_interface, fake_output, 3, 3)
 
-"""
-"""
-    @patch('snake_game.Keyboard.get_next_action')
-    @patch('builtins.print')
-    @patch('random.randint')
-    def testRunOutOfSpace(self, mock_random, _mock_print, mock_keyboard):
-        mock_keyboard.side_effect = [Direction.Y_POSITIVE,
-                                     Direction.X_NEGATIVE,
-                                     Direction.X_NEGATIVE,
-                                     Direction.Y_NEGATIVE,
-                                     Direction.Y_NEGATIVE,
-                                     Direction.X_POSITIVE,
-                                     Direction.X_POSITIVE,
-                                     Direction.X_NEGATIVE,
-                                     Direction.X_POSITIVE,
-                                     Direction.X_POSITIVE
-                                     ]
-        mock_random.side_effect = [2, 1,
-                                   2, 2,
-                                   1, 2,
-                                   0, 2,
-                                   0, 1,
-                                   0, 0,
-                                   1, 0,
-                                   2, 0]
+        def verify_game_map(game_map, object_types_by_pos):
+            max_x, max_y = game_map.shape()
+            for pos_x in range(max_x):
+                for pos_y in range(max_y):
+                    expected_type = object_types_by_pos.get((pos_x, pos_y), type(None))
+                    self.assertEqual(expected_type, type(game_map.peek(pos_x, pos_y)), f'{pos_x} {pos_y}')
+
+        self.assertEqual(fake_output.game_results, [False])
+        self.assertEqual(8, len(fake_output.drawn_maps))
+
+        verify_game_map(fake_output.drawn_maps[0], {(1, 1): Snake, (2, 1): Food})
+        verify_game_map(fake_output.drawn_maps[1], {(1, 1): Snake, (2, 1): Snake, (2, 0): Food})
+        verify_game_map(fake_output.drawn_maps[2], {(1, 1): Snake, (2, 1): Snake, (2, 0): Snake, (1, 0): Food})
+        verify_game_map(fake_output.drawn_maps[3], {(1, 1): Snake, (2, 1): Snake, (2, 0): Snake, (1, 0): Snake, (1, 2): Food})
+        verify_game_map(fake_output.drawn_maps[4], {(1, 1): Snake, (2, 1): Snake, (2, 0): Snake, (1, 0): Snake, (1, 2): Food})
+        verify_game_map(fake_output.drawn_maps[5], {(1, 1): Snake, (2, 1): Snake, (2, 0): Snake, (1, 0): Snake, (1, 2): Snake, (2, 2): Food})
+        verify_game_map(fake_output.drawn_maps[6], {(1, 1): Snake, (2, 1): Snake, (2, 0): Snake, (1, 0): Snake, (1, 2): Snake, (2, 2): Snake, (0, 0): Food})
+        verify_game_map(fake_output.drawn_maps[7], {(1, 1): Snake, (2, 1): Snake, (2, 0): Snake, (1, 0): Snake, (1, 2): Snake, (2, 2): Snake, (0, 0): Food})
+
+    def testRunOutOfSpace(self):
+        mock_input_interface = Mock()
+        fake_output = FakeOutput()
+
+        mock_input_interface.get_next_action.side_effect = [Direction.Y_NEGATIVE,
+                                                            Direction.Y_NEGATIVE,
+                                                            Direction.X_POSITIVE,
+                                                            Direction.X_POSITIVE,
+                                                            Direction.X_NEGATIVE,
+                                                            Direction.X_POSITIVE,
+                                                            Direction.X_POSITIVE
+                                                            ]
+        text_output = TextOutput()
         test_game = SnakeGame()
-        with self.assertRaises(RuntimeError) as context:
-            test_game.run(Keyboard, TextOutput, 3, 3)
-        self.assertIn('Cannot place food', str(context.exception))
-"""
+        test_game.run(mock_input_interface, fake_output, 2, 1)
+
+        def verify_game_map(game_map, object_types_by_pos):
+            max_x, max_y = game_map.shape()
+            for pos_x in range(max_x):
+                for pos_y in range(max_y):
+                    expected_type = object_types_by_pos.get((pos_x, pos_y), type(None))
+                    self.assertEqual(expected_type, type(game_map.peek(pos_x, pos_y)), f'{pos_x} {pos_y}')
+
+        self.assertEqual(fake_output.game_results, [True])
+        self.assertEqual(1, len(fake_output.drawn_maps))
+
+        verify_game_map(fake_output.drawn_maps[0], {(0, 0): Snake, (1, 0): Food})
 
 
 class TestMap2D(unittest.TestCase):
