@@ -85,6 +85,7 @@ class SnakeGame:
         while move_result not in [Snake.MoveResult.HIT_SNAKE, Snake.MoveResult.HIT_WALL]:
             if move_result == Snake.MoveResult.ATE_FOOD:
                 if len(snake) == max_snake_length:
+                    output_interface.draw_map(game_map)
                     output_interface.show_game_result(True)
                     return
                 Food(game_map)
