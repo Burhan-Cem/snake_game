@@ -40,7 +40,7 @@ class TestGameLogic(unittest.TestCase):
         mock_random.side_effect = [2, 1,
                                    0, 0]
         test_game = SnakeGame()
-        test_game.run(fake_output, 3, 3)
+        test_game.run(mock_input_interface, fake_output, 3, 3)
         self.assertEqual(2, len(fake_output.drawn_maps))
 
         fake_output.verify_game_map(self, 0, {(1, 1): Snake, (2, 1): Food})
@@ -55,7 +55,7 @@ class TestGameLogic(unittest.TestCase):
         mock_random.side_effect = [0, 0]
 
         test_game = SnakeGame()
-        test_game.run(fake_output, 3, 3)
+        test_game.run(mock_input_interface, fake_output, 3, 3)
         self.assertEqual(fake_output.game_results, [False])
         self.assertEqual(2, len(fake_output.drawn_maps))
 
@@ -84,7 +84,7 @@ class TestGameLogic(unittest.TestCase):
                                    2, 2,
                                    0, 0]
         test_game = SnakeGame()
-        test_game.run(fake_output, 3, 3)
+        test_game.run(mock_input_interface, fake_output, 3, 3)
 
         self.assertEqual(fake_output.game_results, [False])
 
@@ -98,7 +98,7 @@ class TestGameLogic(unittest.TestCase):
         mock_input_interface.get_next_action.return_value = Direction.X_POSITIVE
 
         test_game = SnakeGame()
-        test_game.run(fake_output, 2, 1)
+        test_game.run(mock_input_interface, fake_output, 2, 1)
 
         self.assertEqual(fake_output.game_results, [True])
         self.assertEqual(2, len(fake_output.drawn_maps))
