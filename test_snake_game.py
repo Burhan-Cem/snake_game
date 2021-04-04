@@ -2,7 +2,7 @@ import unittest
 import copy
 from unittest.mock import Mock, call, patch
 from snake_game import Food, Snake, Map2D, SnakeGame
-from snake_game import Direction, TextOutput, OutputInterface
+from snake_game import Direction, OutputInterface
 
 
 class FakeOutput(OutputInterface):
@@ -26,62 +26,7 @@ class FakeOutput(OutputInterface):
                 test_object.assertEqual(expected_type, type(game_map.peek(pos_x, pos_y)), f'{pos_x} {pos_y}')
 
 
-class TestTextOutput(unittest.TestCase):
 
-    @patch('builtins.print')
-    def testOutputOfEmptyMap(self, mock_print):
-        game_map = Map2D(2, 2)
-        text_output = TextOutput()
-        text_output.draw_map(game_map)
-        calls = [call('+-+-+'),
-                 call('|.|.|'),
-                 call('|.|.|'),
-                 call('+-+-+')]
-        mock_print.assert_has_calls(calls)
-
-    @patch('builtins.print')
-    def testOutputOfSnakeObjectInMap(self, mock_print):
-        game_map = Map2D(1, 2)
-        snake = Snake(game_map, 0, 0, Direction.Y_POSITIVE)
-        Food(game_map)
-        snake.move()
-        text_output = TextOutput()
-        text_output.draw_map(game_map)
-        calls = [call('+-+'),
-                 call('|x|'),
-                 call('|O|'),
-                 call('+-+')]
-        mock_print.assert_has_calls(calls)
-
-    @patch('builtins.print')
-    def testOutputOfFoodObjectInMap(self, mock_print):
-        game_map = Map2D(1, 1)
-        Food(game_map)
-        text_output = TextOutput()
-        text_output.draw_map(game_map)
-        calls = [call('+-+'),
-                 call('|F|'),
-                 call('+-+')]
-        mock_print.assert_has_calls(calls)
-
-    @patch('builtins.print')
-    def testOutputOfUnknownObjectInMap(self, _mock_print):
-        game_map = Map2D(1, 1)
-        game_map.put('some_object', 0, 0)
-        text_output = TextOutput()
-        with self.assertRaises(RuntimeError) as context:
-            text_output.draw_map(game_map)
-        self.assertIn('Unknown object class', str(context.exception))
-
-    @patch('builtins.print')
-    def testGameResult(self, mock_print):
-        text_output = TextOutput()
-        text_output.show_game_result(True)
-        text_output.show_game_result(False)
-
-        calls = [call('Game won'),
-                 call('Game lost')]
-        mock_print.assert_has_calls(calls)
 
 
 class TestGameLogic(unittest.TestCase):
@@ -95,7 +40,7 @@ class TestGameLogic(unittest.TestCase):
         mock_random.side_effect = [2, 1,
                                    0, 0]
         test_game = SnakeGame()
-        test_game.run(mock_input_interface, fake_output, 3, 3)
+        test_game.run(fake_output, 3, 3)
         self.assertEqual(2, len(fake_output.drawn_maps))
 
         fake_output.verify_game_map(self, 0, {(1, 1): Snake, (2, 1): Food})
@@ -110,7 +55,7 @@ class TestGameLogic(unittest.TestCase):
         mock_random.side_effect = [0, 0]
 
         test_game = SnakeGame()
-        test_game.run(mock_input_interface, fake_output, 3, 3)
+        test_game.run(fake_output, 3, 3)
         self.assertEqual(fake_output.game_results, [False])
         self.assertEqual(2, len(fake_output.drawn_maps))
 
@@ -139,7 +84,7 @@ class TestGameLogic(unittest.TestCase):
                                    2, 2,
                                    0, 0]
         test_game = SnakeGame()
-        test_game.run(mock_input_interface, fake_output, 3, 3)
+        test_game.run(fake_output, 3, 3)
 
         self.assertEqual(fake_output.game_results, [False])
 
@@ -153,7 +98,7 @@ class TestGameLogic(unittest.TestCase):
         mock_input_interface.get_next_action.return_value = Direction.X_POSITIVE
 
         test_game = SnakeGame()
-        test_game.run(mock_input_interface, fake_output, 2, 1)
+        test_game.run(fake_output, 2, 1)
 
         self.assertEqual(fake_output.game_results, [True])
         self.assertEqual(2, len(fake_output.drawn_maps))

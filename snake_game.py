@@ -10,6 +10,11 @@ class Direction(Enum):
     X_NEGATIVE = 4
 
 
+class InputInterface:
+    def get_next_action(self):
+        raise NotImplementedError
+
+
 class OutputInterface:
     def draw_map(self, game_map):
         raise NotImplementedError
@@ -18,62 +23,8 @@ class OutputInterface:
         raise NotImplementedError
 
 
-class TextOutput(OutputInterface):
-    def draw_map(self, game_map):
-        dim_x, dim_y = game_map.shape()
-        horizontal_border = '+' + ('-+' * dim_x)
-        print(horizontal_border)
-        for y in range(dim_y):
-            row = '|'
-            for x in range(dim_x):
-                cell = game_map.peek(x, y)
-                cell_type = type(cell)
-                if cell is None:
-                    row += '.'
-                elif cell_type == Snake:
-                    if cell.head_pos() == (x, y):
-                        row += 'O'
-                    else:
-                        row += 'x'
-                elif cell_type == Food:
-                    row += 'F'
-                else:
-                    raise RuntimeError(f'Unknown object class in game_map:{cell_type}')
-                row += '|'
-            print(row)
-        print(horizontal_border)
-
-    def show_game_result(self, game_won):
-        if game_won:
-            print('Game won')
-        else:
-            print('Game lost')
-
-
-class PygameOutput(OutputInterface):
-    def draw_map(self, game_map):
-        raise NotImplementedError
-
-
-class InputInterface:
-    def get_next_action(self):
-        raise NotImplementedError
-
-
-class Keyboard(InputInterface):
-    """Must implement everything in InputInterface"""
-
-    def get_next_action(self):
-        raise NotImplementedError
-
-
-class MLInput(InputInterface):
-    def get_next_action(self):
-        raise NotImplementedError
-
-
 class SnakeGame:
-    def run(self, input_interface, output_interface, dim_x, dim_y, max_iteration=1000000):
+    def run(input_interface, output_interface, dim_x, dim_y, max_iteration=1000000):
         game_map = Map2D(dim_x, dim_y)
         snake = Snake(game_map, (dim_x-1) // 2, (dim_y-1) // 2, Direction.X_POSITIVE)
         max_snake_length = dim_x * dim_y
@@ -234,12 +185,3 @@ class Snake:
             self.game_map.put(None, *self.positions.pop())
             return Snake.MoveResult.MOVED
         raise RuntimeError(f'Blocking object unknown type {type(blocking_object)}')
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    # Executed only if run as a script
-    main()
