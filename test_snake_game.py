@@ -26,9 +26,6 @@ class FakeOutput(OutputInterface):
                 test_object.assertEqual(expected_type, type(game_map.peek(pos_x, pos_y)), f'{pos_x} {pos_y}')
 
 
-
-
-
 class TestGameLogic(unittest.TestCase):
 
     @patch('random.randint')
