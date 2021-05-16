@@ -62,6 +62,32 @@ class TestTextOutput(unittest.TestCase):
                  call('Game lost')]
         mock_print.assert_has_calls(calls)
 
+    @patch('builtins.print')
+    def testSnakeMoveRight(self, mock_print):
+        game_map = Map2D(2, 2)
+        snake = Snake(game_map, 0, 0, Direction.X_POSITIVE)
+        snake.move()
+        text_output = TextOutput()
+        text_output.draw_map(game_map)
+        calls = [call('+-+-+'),
+                 call('|.|O|'),
+                 call('|.|.|'),
+                 call('+-+-+')]
+        mock_print.assert_has_calls(calls)
+
+    @patch('builtins.print')
+    def testSnakeMoveDown(self, mock_print):
+        game_map = Map2D(2, 2)
+        snake = Snake(game_map, 0, 0, Direction.Y_POSITIVE)
+        snake.move()
+        text_output = TextOutput()
+        text_output.draw_map(game_map)
+        calls = [call('+-+-+'),
+                 call('|.|.|'),
+                 call('|O|.|'),
+                 call('+-+-+')]
+        mock_print.assert_has_calls(calls)
+
 
 if __name__ == '__main__':
     unittest.main()

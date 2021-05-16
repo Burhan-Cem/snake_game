@@ -24,7 +24,7 @@ class OutputInterface:
 
 
 class SnakeGame:
-    def run(self, input_interface, output_interface, dim_x, dim_y, max_iteration=1000000):
+    def run(input_interface, output_interface, dim_x, dim_y, max_iteration=1000000):
         game_map = Map2D(dim_x, dim_y)
         snake = Snake(game_map, (dim_x-1) // 2, (dim_y-1) // 2, Direction.X_POSITIVE)
         max_snake_length = dim_x * dim_y

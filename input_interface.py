@@ -1,24 +1,26 @@
 from snake_game import InputInterface, Direction
 from time import sleep
-from keyboard import is_pressed
+import keyboard
 
 
 class Keyboard(InputInterface):
     """Must implement everything in InputInterface"""
+    def __init__(self, action_duration):
+        self.action_duration = action_duration
 
     def get_next_action(self):
         next_action = None
-        for _ in range(8):
-            if is_pressed('up'):
-                next_action = Direction.Y_POSITIVE
-            elif is_pressed('down'):
+        num_loops = max(int(self.action_duration / 0.1), 1)
+        for _ in range(num_loops):
+            if keyboard.is_pressed('up'):
                 next_action = Direction.Y_NEGATIVE
-            elif is_pressed('left'):
+            elif keyboard.is_pressed('down'):
+                next_action = Direction.Y_POSITIVE
+            elif keyboard.is_pressed('left'):
                 next_action = Direction.X_NEGATIVE
-            elif is_pressed('right'):
+            elif keyboard.is_pressed('right'):
                 next_action = Direction.X_POSITIVE
             sleep(0.1)
-        print(next_action)
         return next_action
         # TODO: Return invalid direction when multiple keys are pressed
 

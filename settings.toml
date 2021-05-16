@@ -1,0 +1,5 @@
+dim_x = 8
+dim_y = 6
+input_interface = "Keyboard"
+output_interface = "Pygame"
+time_step_seconds = 0.5
