@@ -1,7 +1,7 @@
 from snake_game import InputInterface, Direction
 from time import sleep
 import keyboard
-
+from random import random
 
 class Keyboard(InputInterface):
     """Must implement everything in InputInterface"""
@@ -28,3 +28,9 @@ class Keyboard(InputInterface):
 class MLInput(InputInterface):
     def get_next_action(self):
         raise NotImplementedError
+        
+        
+class RandomInput(InputInterface):
+    def get_next_action(self):
+        directions = [Direction.X_NEGATIVE, Direction.Y_NEGATIVE, Direction.X_POSITIVE, Direction.Y_POSITIVE]
+        return choice(directions)
