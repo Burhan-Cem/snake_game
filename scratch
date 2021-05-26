@@ -1,6 +1,6 @@
 def fitness(snake_length, num_turns)
     """ Function calculates the fitness of a game performance """
-    fit = int(snake_length/num_turns)
+    fit = snake_length * 100 - num_turns
     return fit
 
 def perceive_game_map(game_map, snake_head_pos, snake_direction)
@@ -14,7 +14,12 @@ def neural_network_feed_forward(input_layer_factors, snake_dna)
 def crossover(parent1, parent2):
     """ Function returns two child snake_dnas by crossing 2 parent snake_dnas over a single random crossing point """
     #find random crossing point along the range of snake dna
+    crossing_point = randint(length(parent1))
+
     #switch dnas of both parents before and after this point
+    child1 = parent1[0:crossing_point] + parent2[crossing_point:end]
+    child2 = parent2[0:crossing_point] + parent1[crossing_point:end]
+
     return child1, child2
     
 def mutate(snake_dna, mutation_rate):
@@ -68,3 +73,4 @@ class individual_snake(object):
 #current_generation is a list of snakes
 #next_generation is a list of snakes
 
+#snake_dna is a list of floats between [0, 1]
