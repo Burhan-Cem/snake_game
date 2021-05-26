@@ -1,37 +1,70 @@
 def fitness(snake_length, num_turns)
-    pass
-    return int(snake_length/num_turns)
+    """ Function calculates the fitness of a game performance """
+    fit = int(snake_length/num_turns)
+    return fit
+
+def perceive_game_map(game_map, snake_head_pos, snake_direction)
+    """ Function extracts the relevant subset of information from the game_map and returns input_layer_factors  """
+    return input_layer_factors
     
 def neural_network_feed_forward(input_layer_factors, snake_dna)
-    pass
+    """ Function returns the next direction according to the current state of the perceived game_map and snake_dna """
     return next_direction
-    
-def populate_next_generation(current_generation, population)
-    #select fittest 10% of the generation
-    #generate 90% new by:
-    #apply crossing-over
-    #run mutations on new snakes
-    #next_generation = 90% newbies + 10% oldies
-    return next_generation
-    
+
 def crossover(parent1, parent2):
+    """ Function returns two child snake_dnas by crossing 2 parent snake_dnas over a single random crossing point """
     #find random crossing point along the range of snake dna
     #switch dnas of both parents before and after this point
     return child1, child2
     
 def mutate(snake_dna, mutation_rate):
+    """ Function mutates the snake dna according to a given mutation rate """
     #randomly select x% of the dna to apply mutation
+    num_genes = length(snake_dna)
+    num_mutations = int(num_genes * mutation_rate)
+    mutated_genes = random.choices(range(num_genes), weights=None, cum_weights=None, k=num_mutations)
+
     #assign random values inside value range to the selected coefficients
+    for gene in mutated_genes:
+        snake_dna[gene] = random()        
     return snake_dna
     
-def test_generation_of_snakes(current_generation)
+def populate_next_generation(current_generation, population)
+    """ Function generates a new generation of snakes of a given population based on the fitness of the current generation """
+    #select fittest 10% of the generation
+    current_pop = length(current_generation)
+    current_generation.sort(key=lambda x: x.fitness, reverse=True)
+    fittest = current_generation[0:current_pop/10]
     
+    #generate 90% new by:
+    #apply crossing-over
+    children = 
+    #run mutations on new snakes
+    mutate(children, 0.05)
+    #next_generation = 90% newbies + 10% oldies
+    next_generation = fittest + children
+    #reset all fitness value of the whole population to 0
+    return next_generation
+    
+    
+def perform(current_generation)
+    """ Function runs a game with each snake and updates their fitness value according to their performance """    
     for snake in current_generation:
-        snake.fitness = run_game(snake) 
-        
-    current_generation = expand next_generation with fitness values
+        snake_length, num_turns = run_game(snake)
+        snake.fitness = fitness(snake_length, num_turns)
     return current_generation
     
-class snake:
-    dna = 0
-    fitness = 0
+def champion(current_generation)
+    """ Function returns the snake with the highest fitness value in its generation """
+    #select the fittest snake of its generation as champion
+    champ = max(current_generation, key=lambda snake: snake.fitness)
+    return champ
+
+class individual_snake(object):
+    def __init__(self, dna):
+        self.dna = dna
+        self.fitness = 0
+
+#current_generation is a list of snakes
+#next_generation is a list of snakes
+
