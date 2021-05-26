@@ -1,0 +1,37 @@
+def fitness(snake_length, num_turns)
+    pass
+    return int(snake_length/num_turns)
+    
+def neural_network_feed_forward(input_layer_factors, snake_dna)
+    pass
+    return next_direction
+    
+def populate_next_generation(current_generation, population)
+    #select fittest 10% of the generation
+    #generate 90% new by:
+    #apply crossing-over
+    #run mutations on new snakes
+    #next_generation = 90% newbies + 10% oldies
+    return next_generation
+    
+def crossover(parent1, parent2):
+    #find random crossing point along the range of snake dna
+    #switch dnas of both parents before and after this point
+    return child1, child2
+    
+def mutate(snake_dna, mutation_rate):
+    #randomly select x% of the dna to apply mutation
+    #assign random values inside value range to the selected coefficients
+    return snake_dna
+    
+def test_generation_of_snakes(current_generation)
+    
+    for snake in current_generation:
+        snake.fitness = run_game(snake) 
+        
+    current_generation = expand next_generation with fitness values
+    return current_generation
+    
+class snake:
+    dna = 0
+    fitness = 0
