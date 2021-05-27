@@ -1,3 +1,4 @@
+
 def fitness(snake_length, num_turns)
     """ Function calculates the fitness of a game performance """
     fit = snake_length * 100 - num_turns
@@ -6,17 +7,43 @@ def fitness(snake_length, num_turns)
 def perceive_game_map(game_map, snake_head_pos, snake_direction)
     """ Function extracts the relevant subset of information from the game_map and returns input_layer_factors  """
     return input_layer_factors
+
+def sigmoid(x):
+    y = 1 / (1 + np.exp(-x))
+    return y
     
 def neural_network_feed_forward(input_layer_factors, snake_dna)
     """ Function returns the next direction according to the current state of the perceived game_map and snake_dna """
+    # define neural network dimensions
+    num_input_layer = 96
+    num_hidden_layer1 = 24
+    num_hidden_layer2 = 12
+    num_output_layer = 3
+    
+    C1_shape = (num_hidden_layer1, num_input_layer)
+    C2_shape = (num_hidden_layer2, num_hidden_layer1)
+    C3_shape = (num_output_layer, num_hidden_layer2)
+    
+    #TODO: rework dependency of initial snake_dna to neural network design 
+    dna_length = num_input_layer * num_hidden_layer1 + num_hidden_layer1 * num_hidden_layer2 + num_hidden_layer2 * num_output_layer
+    
+    # convert snake dna to layer coefficient matrices
+    C1 = snake_dna[0:C1_shape[0] * C1_shape[1]]
+    C2 = snake_dna[  C1_shape[0] * C1_shape[1] : C2_shape[0] * C2_shape[1] + C1_shape[0] * C1_shape[1]]
+    C3 = snake_dna[  C2_shape[0] * C2_shape[1] + C1_shape[0] * C1_shape[1] : ]
+
+    C1.reshape(C1_shape[0], C1_shape[1]) 
+    C2.reshape(C2_shape[0], C2_shape[1]) 
+    C3.reshape(C3_shape[0], C3_shape[1])
+    
     return next_direction
 
 def crossover(parent1, parent2):
     """ Function returns two child snake_dnas by crossing 2 parent snake_dnas over a single random crossing point """
-    #find random crossing point along the range of snake dna
+    # find random crossing point along the range of snake dna
     crossing_point = randint(length(parent1))
 
-    #switch dnas of both parents before and after this point
+    # switch dnas of both parents before and after this point
     child1 = parent1[0:crossing_point] + parent2[crossing_point:end]
     child2 = parent2[0:crossing_point] + parent1[crossing_point:end]
 
@@ -24,12 +51,12 @@ def crossover(parent1, parent2):
     
 def mutate(snake_dna, mutation_rate):
     """ Function mutates the snake dna according to a given mutation rate """
-    #randomly select x% of the dna to apply mutation
+    # randomly select x% of the dna to apply mutation
     num_genes = length(snake_dna)
     num_mutations = int(num_genes * mutation_rate)
     mutated_genes = random.choices(range(num_genes), weights=None, cum_weights=None, k=num_mutations)
 
-    #assign random values inside value range to the selected coefficients
+    # assign random values inside value range to the selected coefficients
     for gene in mutated_genes:
         snake_dna[gene] = random()        
     return snake_dna
@@ -65,7 +92,7 @@ def champion(current_generation)
     champ = max(current_generation, key=lambda snake: snake.fitness)
     return champ
 
-class individual_snake(object):
+class snake(object):
     def __init__(self, dna):
         self.dna = dna
         self.fitness = 0
