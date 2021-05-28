@@ -6,6 +6,12 @@ def fitness(snake_length, num_turns)
 
 def perceive_game_map(game_map, snake_head_pos, snake_direction)
     """ Function extracts the relevant subset of information from the game_map and returns input_layer_factors  """
+    # peek around snake head
+    
+    # peek 2nd layer around snake head
+    
+    # peek with rays around snake head
+    
     return input_layer_factors
 
 def sigmoid(x):
